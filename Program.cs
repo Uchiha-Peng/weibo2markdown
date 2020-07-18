@@ -16,13 +16,19 @@ namespace Weibo
     {
         private static readonly HttpClient client = new HttpClient();
 
-        private static int index = 1;
-
         static async Task Main()
         {
             try
-            {   //微博用户Id（此处放的是我个人的微博Id，已经注销，无法再导出，需要替换成你自己的）
-                string userId = "223417235";
+            {
+                ;
+                Console.WriteLine($"{getGodString()}******************************苦海无边.回头是岸******************************\n********欢迎使用,请输入微博ID,如：223417235（非微博昵称）,Enter键确认********");
+                //微博用户Id
+                string userId = Console.ReadLine();
+                while (String.IsNullOrWhiteSpace(userId))
+                {
+                    Console.WriteLine("*****************************不得为空,请重新输入*****************************");
+                    userId = Console.ReadLine();
+                }
                 List<Weibo> weiboList = await getWeiboList(userId);
                 if (weiboList != null && weiboList.Count > 0)
                 {
@@ -59,15 +65,19 @@ namespace Weibo
                     }
                     string end = "## 终章·从前过往，皆为序章\n有一种落差，是你配不上上自己的野心，也辜负了所受的苦难。\n\n事情总会忽然发生，而理由则是后来才会察觉的。\n\n往日情怀酿做酒，换你余生长醉不复忧。\n\n如果你忘了来时的路，那你注定会迷路。";
                     await WriteToMarkdown(end);
-                    Console.WriteLine("导出完毕........");
+                    Console.WriteLine("导出完毕........，请在文档目录下查看‘Weibo.md’文件，点击任意键结束程序");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    Console.WriteLine("导出失败........，点击任意键结束程序");
+                    Console.ReadKey();
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
-
-
         }
 
         public async static Task writeContent(dynamic weibo, string userName, string publishAt)
@@ -119,11 +129,8 @@ namespace Weibo
             {
                 sb.Append($"\n\n![]({(string)weibo.page_info.page_pic.url})");
             }
-            else
-            {
-                Console.WriteLine("无图");
-            }
             sb.Append("\n\n\n\n\n\n");
+            Console.WriteLine("写入一条数据......");
             await WriteToMarkdown(sb.ToString());
         }
 
@@ -177,16 +184,12 @@ namespace Weibo
                                     Weibo weibo = new Weibo(item.mblog);
                                     weiboList.Add(weibo);
                                     db.Weibos.Add(weibo);
-                                    if (db.SaveChanges() > 0)
-                                    {
-                                        Console.WriteLine("1条存库成功");
-                                    }
+                                    db.SaveChanges();
                                 }
                             }
                             containerId = (string)weiboListObj.data.cardlistInfo.containerid;
                             sinceId = (string)weiboListObj.data.cardlistInfo.since_id;
                             url += $"&since_id=";
-                            index = 1;
                             while (true)
                             {
                                 responseBody = await getRequest(url + sinceId);
@@ -208,10 +211,7 @@ namespace Weibo
                                             Weibo weibo = new Weibo(item.mblog);
                                             weiboList.Add(weibo);
                                             db.Weibos.Add(weibo);
-                                            if (db.SaveChanges() > 0)
-                                            {
-                                                Console.WriteLine("1条存库成功");
-                                            }
+                                            db.SaveChanges();
                                         }
                                     }
                                     containerId = (string)weiboListObj.data.cardlistInfo.containerid;
@@ -251,8 +251,7 @@ namespace Weibo
                 if (response.StatusCode.Equals(HttpStatusCode.OK))
                 {
                     responseBody = await response.Content.ReadAsStringAsync();
-                    index++;
-                    Console.WriteLine(index + "次抓取成功....");
+                    Console.WriteLine("本次抓取成功....");
                     return responseBody;
                 }
                 reTry++;
@@ -263,5 +262,9 @@ namespace Weibo
 
         }
 
+        static string getGodString()
+        {
+            return "||=========================================================================||\n||                                  _oo8oo_                                ||\n||                                 o8888888o                               ||\n||                                 88\" . \"88                               ||\n||                                 (| -_- |)                               ||\n||                                 0\\  =  /0                               ||\n||                               ___/'==='\\___                             ||\n||                             .' \\\\|     |// '.                           ||\n||                            / \\\\|||  :  |||// \\                          ||\n||                           / _||||| -:- |||||_ \\                         ||\n||                          |   | \\\\\\  -  /// |   |                        ||\n||                          | \\_|  ''\\---/''  |_/ |                        ||\n||                          \\  .-\\__  '-'  __/-.  /                        ||\n||                        ___'. .'  /--.--\\  '. .'___                      ||\n||                     .\"\" '<  '.___\\_<|>_/___.'  >' \"\".                   ||\n||                    | | :  `- \\`.:`\\ _ /`:.`/ -`  : | |                  ||\n||                    \\  \\ `-.   \\_ __\\ /__ _/   .-` /  /                  ||\n||                =====`-.____`.___ \\_____/ ___.`____.-`=====              ||\n||                                  `= ---=`                               ||\n||=========================================================================||\n";
+        }
     }
 }
