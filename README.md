@@ -30,7 +30,7 @@
 
 
 
-![](./alipay.jpg)
+![](https://uchiha-peng.gitee.io/img/alipay.jpg)
 
 
 
@@ -54,7 +54,7 @@
 
 
 
-![](https://uchiha-peng.github.io/img/0.jpg)
+![](https://uchiha-peng.gitee.io/img/0.jpg)
 
 
 
@@ -74,7 +74,7 @@
 很多东西，不是我要，就能得到。很多人，不是我留，就能留住。你就像指缝的阳光，温暖，美好，却永远无法抓住。我行走在爱的荒漠，迷失了方向；沿途的风景，只能边走边忘。不再挣扎，不再纠缠。时光如水，总是无言。。。。。。 
 
 
-![](https://uchiha-peng.github.io/img/1.jpg)
+![](https://uchiha-peng.gitee.io/img/1.jpg)
 
 
 
@@ -94,7 +94,7 @@
 我知道，并不是所有的鸟儿都会飞翔。当夏天过后，还有鲜花未曾开放。我害怕看到你，独自一人绝望。更害怕看不到你，不能和你一起迷惘。多想在你身旁，看命运变幻无常，体验这份默默忍耐的力量。 ​​​
 
 
-![](https://uchiha-peng.github.io/img/3.jpg)
+![](https://uchiha-peng.gitee.io/img/3.jpg)
 
 
 
@@ -111,7 +111,7 @@
 #LIFE# 从前只觉得冬日里的暖阳最被需要，没想到吧，有一天久雨不晴，也会想念好久不见的盛夏骄阳。 ​​​
 
 
-![](https://uchiha-peng.github.io/img/2782.jpg)
+![](https://uchiha-peng.gitee.io/img/2782.jpg)
 
 
 
