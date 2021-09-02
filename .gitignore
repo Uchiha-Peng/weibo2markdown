@@ -1,3 +1,5 @@
 bin
 obj
+Properties
 .suo
+*.csproj.user
