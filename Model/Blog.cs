@@ -60,9 +60,16 @@ namespace WeBook.Model
             }
             else
             {
-                if (weibo.TryGetProperty("page_info", out var pageInfo))
+                if (weibo.TryGetProperty("page_info", out var pageInfo) && !IsRepost)
                     if (pageInfo.TryGetProperty("media_info", out var mediaInfo))
                     {
+                        if (pageInfo.TryGetProperty("page_pic", out var pagePic))
+                        {
+                            if (pagePic.TryGetProperty("url", out var img))
+                            {
+                                Images.Add(Regex.Unescape(img.GetString()));
+                            }
+                        }
                         if (mediaInfo.TryGetProperty("stream_url", out var streamUrl))
                         {
                             Video = Regex.Unescape(streamUrl.GetString());

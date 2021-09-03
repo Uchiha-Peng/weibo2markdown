@@ -52,6 +52,7 @@ namespace WeBook
                     var httpService = host.Services.GetRequiredService<IHttpService>();
                     var url = $"?type=uid&value={weiboId}";
                     (var containerId, var userInfo) = await GetUserInfo(httpService, url);
+                    Console.WriteLine($"已经找到用户：{userInfo.Name } {userInfo.Description} ".PadLeft(12, '*').PadRight(12, '*'));
                     var list = await GetWeiboList(httpService, url, containerId);
                     await WriteBookContent(list, userInfo);
                     Console.WriteLine("\n导出完成，推荐使用Typora打开Markdown文件，按Ctrl+C键结束程序".PadLeft(12, '*').PadRight(12, '*'));
@@ -81,7 +82,9 @@ namespace WeBook
                 }
                 string title = $"\n\n\n\n#### **{user.Name}**   {item.CreateAt.ToString("yyyy年M月d日 HH:mm:ss")}\n\n";
                 sb.Append(title);
-                string blogData = $"来自：{item.Source}   获得：{item.RepostCount} 转发 {item.CommentCount} 评论 {item.AttitudesCount} 点赞\n";
+                var contentType = item.BlogType == 2 ? "视频" : "图文";
+                var repost = item.IsRepost ? "转发" : "原创";
+                string blogData = $"[{repost}{contentType}]  来自：{item.Source}   获得：{item.RepostCount} 转发 {item.CommentCount} 评论 {item.AttitudesCount} 点赞\n";
                 sb.Append(blogData);
                 while (item.Text.Contains("<") && item.Text.Contains(">"))
                 {
@@ -89,20 +92,16 @@ namespace WeBook
                     int ed = item.Text.IndexOf(">");
                     item.Text = item.Text.Remove(beg, ed - beg + 1);
                 }
-                sb.Append(item.Text);
+                if (string.IsNullOrEmpty(item.Video))
+                    sb.Append($"\n{item.Text}");
+                else
+                    sb.Append($"\n[{item.Text}]({item.Video})");
                 if (item.Images.Count > 0)
                 {
                     foreach (var img in item.Images)
                     {
                         if (!string.IsNullOrWhiteSpace(img))
                             sb.Append($"\n\n![]({img})");
-                    }
-                }
-                else
-                {
-                    if (!string.IsNullOrEmpty(item.Video))
-                    {
-                        sb.Append($"\n\n![]({item.Video})");
                     }
                 }
                 year = item.CreateAt.Year;
