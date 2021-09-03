@@ -12,8 +12,9 @@
 
 ## 怎么用？
 
-​	1. 方法一：克隆代码到本地，安装.NET Core 5 Runtime，`dotnet run`即可，输入你想导出的微博用户Id即可
-   2. 方法二：下载Release的可执行文件，支持Mac、Win、Linux。Windows下双击运行即可，Linux下请先` chmod +x`赋予读写权限
+	方法一：克隆代码到本地，安装.NET Core 5 Runtime，`dotnet run`即可，输入你想导出的微博用户Id即可。（如何获取微博用户id请自行百度，非常简单）
+
+	方法二：下载Release的可执行文件，支持Mac、Win、Linux。Windows下双击运行即可，Linux下请先` chmod +x`赋予读写权限
 
 
 ## 它有什么特点（优点、缺点）
