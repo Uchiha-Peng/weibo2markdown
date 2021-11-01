@@ -13,8 +13,8 @@ namespace WeBook.Model
         public string Description { get; set; }
         public string Avatar { get; set; }
         public string Cover { get; set; }
-        public int FollowerCount { get; set; }
-        public int FollowCount { get; set; }
+        public string FollowerCount { get; set; }
+        public string FollowCount { get; set; }
         public int BlogCount { get; set; }
 
         public User()
@@ -27,8 +27,8 @@ namespace WeBook.Model
             Description = obj.GetProperty("description").GetString();
             Avatar = obj.GetProperty("avatar_hd").GetString();
             Cover = obj.GetProperty("cover_image_phone").GetString();
-            FollowerCount = obj.GetProperty("followers_count").GetInt32();
-            FollowCount = obj.GetProperty("follow_count").GetInt32();
+            FollowerCount = obj.GetProperty("followers_count").GetString();
+            FollowCount = obj.GetProperty("followers_count_str").GetString();
             BlogCount = obj.GetProperty("statuses_count").GetInt32();
         }
     }
