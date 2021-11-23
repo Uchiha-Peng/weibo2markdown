@@ -42,7 +42,7 @@ namespace WeBook.Model
             RepostCount = weibo.GetProperty("reposts_count").GetInt32();
             CommentCount = weibo.GetProperty("comments_count").GetInt32();
             AttitudesCount = weibo.GetProperty("attitudes_count").GetInt32();
-            Text = Regex.Unescape(weibo.GetProperty("text").GetString());
+            Text = weibo.GetProperty("text").GetString();
             if (weibo.TryGetProperty("retweeted_status", out var isRepost))
             {
                 IsRepost = true;

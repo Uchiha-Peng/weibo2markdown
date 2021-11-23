@@ -1,5 +1,6 @@
 bin
 obj
-Properties
 .suo
 *.csproj.user
+*.pubxml.user
+/dist
