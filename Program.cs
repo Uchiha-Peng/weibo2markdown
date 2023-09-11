@@ -113,7 +113,9 @@ namespace WeBook
                 year = item.CreateAt.Year;
                 mounth = item.CreateAt.Month;
             }
-            string end = $"\n\n\n\n## 终章·从前过往，皆为序章\n\n莫道光阴慢，流年忽已远。\n\n\n\n![]({user.Cover})\n\n\n\n";
+
+            string cover = await DownloadImg(user.Cover);
+            string end = $"\n\n\n\n## 终章·从前过往，皆为序章\n\n莫道光阴慢，流年忽已远。\n\n\n\n![]({cover})\n\n\n\n";
             sb.Append(end);
             using var outputFile = new StreamWriter($"./{user.Name} WeBook-By含光.md");
             await outputFile.WriteAsync(sb.ToString());
