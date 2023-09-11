@@ -198,12 +198,12 @@ namespace WeBook
 
         static async Task<string> DownloadImg(string url)
         {
-
             // 设置要下载的图片的URL
             string imageUrl = $"https://image.baidu.com/search/down?url={url}";
             var imageSrc = $"img/{url.Split("/").Last()}";
             if (File.Exists(imageSrc))
                 return imageSrc;
+            Console.WriteLine($"正在下载图片{url}");
             using var httpClient = new HttpClient();
             try
             {
