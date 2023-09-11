@@ -20,6 +20,8 @@ namespace WeBook
         static string weiboId = string.Empty;
         static async Task Main(string[] args)
         {
+            if (!Directory.Exists("img"))
+                Directory.CreateDirectory("img");
             using IHost host = BuildHost(args);
             await DoWorkAsync(host);
             await host.RunAsync();
