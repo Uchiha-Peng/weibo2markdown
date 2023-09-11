@@ -52,7 +52,7 @@ namespace WeBook
                     var httpService = host.Services.GetRequiredService<IHttpService>();
                     var url = $"?type=uid&value={weiboId}";
                     (var containerId, var userInfo) = await GetUserInfo(httpService, url);
-                    Console.WriteLine($"已经找到用户：{userInfo.Name } {userInfo.Description} ".PadLeft(12, '*').PadRight(12, '*'));
+                    Console.WriteLine($"已经找到用户：{userInfo.Name} {userInfo.Description} ".PadLeft(12, '*').PadRight(12, '*'));
                     var list = await GetWeiboList(httpService, url, containerId);
                     await WriteBookContent(list, userInfo);
                     Console.WriteLine("\n导出完成，推荐使用Typora打开Markdown文件，按Ctrl+C键结束程序".PadLeft(12, '*').PadRight(12, '*'));
@@ -67,7 +67,8 @@ namespace WeBook
 
         static async Task WriteBookContent(List<Blog> list, User user)
         {
-            string start = $"## 初篇·人生忽如寄，怜取眼前人\n\n**编者·含光**  	**编于二〇二一**  	*视不可见，运之不知其所触，泯然无际，经物而物不觉。*\n\n**著者·{user.Name}**  	**著于{list[list.Count - 1].CreateAt.Year}—{list[0].CreateAt.Year}**  	*{user.Description}*\n\n**著者生平**  	*自{list[list.Count - 1].CreateAt.ToString("yyyy年M月d日")}至{list[0].CreateAt.ToString("yyyy年M月d日")}，关注{user.FollowCount}位网友，收获{user.FollowerCount}位网友关注,发布微博{user.BlogCount}篇*\n\n\n\n昨夜西风凋碧树，独上高楼，望尽天涯路。——晏殊《蝶恋花》\n\n衣带渐宽终不悔，为伊消得人憔悴。——柳永《凤栖梧》\n\n众里寻他千百度，蓦然回首，那人却在，灯火阑珊处。——辛弃疾《青玉案》\n\n\n\n![]({user.Avatar})\n\n\n\n";
+            string avatar = await DownloadImg(user.Avatar);
+            string start = $"## 初篇·人生忽如寄，怜取眼前人\n\n**编者·含光**  	**编于二〇二一**  	*视不可见，运之不知其所触，泯然无际，经物而物不觉。*\n\n**著者·{user.Name}**  	**著于{list[list.Count - 1].CreateAt.Year}—{list[0].CreateAt.Year}**  	*{user.Description}*\n\n**著者生平**  	*自{list[list.Count - 1].CreateAt.ToString("yyyy年M月d日")}至{list[0].CreateAt.ToString("yyyy年M月d日")}，关注{user.FollowCount}位网友，收获{user.FollowerCount}位网友关注,发布微博{user.BlogCount}篇*\n\n\n\n昨夜西风凋碧树，独上高楼，望尽天涯路。——晏殊《蝶恋花》\n\n衣带渐宽终不悔，为伊消得人憔悴。——柳永《凤栖梧》\n\n众里寻他千百度，蓦然回首，那人却在，灯火阑珊处。——辛弃疾《青玉案》\n\n\n\n![]({avatar})\n\n\n\n";
             StringBuilder sb = new StringBuilder(start);
             int year = 0, mounth = 0;
             foreach (var item in list)
@@ -101,7 +102,10 @@ namespace WeBook
                     foreach (var img in item.Images)
                     {
                         if (!string.IsNullOrWhiteSpace(img))
-                            sb.Append($"\n\n![]({img})");
+                        {
+                            var url = await DownloadImg(img);
+                            sb.Append($"\n\n![]({url})");
+                        }
                     }
                 }
                 year = item.CreateAt.Year;
@@ -119,10 +123,11 @@ namespace WeBook
             int page = 1;
             long i = 1;
             bool doAgain = true;
-            try
+            while (doAgain)
             {
-                while (doAgain)
+                try
                 {
+
                     var weiboObj = await GetJsonObjectAsync(httpService, $"{url}&containerid={containerId}&page={page}");
                     Console.WriteLine($"{url}&containerid={containerId}&page={page}");
                     doAgain = weiboObj.GetProperty("ok").GetInt32() == 1;
@@ -136,14 +141,14 @@ namespace WeBook
                             i++;
                         }
                     }
-                    page++;
                 }
-                Console.WriteLine($"累计抓取{i}条微博数据");
+                catch (Exception)
+                {
+                    Console.WriteLine($"第{page}页出现异常，已经获取到{i}条数据");
+                }
+                page++;
             }
-            catch (Exception)
-            {
-                Console.WriteLine($"第{page}页出现异常，已经获取到{i}条数据");
-            }
+            Console.WriteLine($"累计抓取{i}条微博数据");
             return blogList;
         }
 
@@ -187,6 +192,33 @@ namespace WeBook
                 result = JsonSerializer.Deserialize<JsonElement>(json);
             }
             return result;
+        }
+
+        static async Task<string> DownloadImg(string url)
+        {
+
+            // 设置要下载的图片的URL
+            string imageUrl = $"https://image.baidu.com/search/down?url={url}";
+            var imageSrc = $"img/{url.Split("/").Last()}";
+            if (File.Exists(imageSrc))
+                return imageSrc;
+            using var httpClient = new HttpClient();
+            try
+            {
+                HttpResponseMessage response = await httpClient.GetAsync(imageUrl);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    byte[] imageBytes = await response.Content.ReadAsByteArrayAsync();
+                    File.WriteAllBytes(imageSrc, imageBytes);
+                    return imageSrc;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("下载异常: " + ex.Message);
+            }
+            return url;
         }
 
         #region

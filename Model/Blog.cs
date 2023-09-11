@@ -51,7 +51,12 @@ namespace WeBook.Model
             {
                 foreach (var item in pics.EnumerateArray())
                 {
-                    if (item.TryGetProperty("url", out var url))
+                    if (item.TryGetProperty("large", out var large))
+                    {
+                        var url = large.GetProperty("url");
+                        Images.Add(Regex.Unescape(url.GetString()));
+                    }
+                    else if (item.TryGetProperty("url", out var url))
                     {
                         Images.Add(Regex.Unescape(url.GetString()));
                     }

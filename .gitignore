@@ -1,5 +1,6 @@
 bin
 obj
+.vs
 .suo
 *.csproj.user
 *.pubxml.user
